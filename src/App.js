@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import "./styles.css";
+import React, { useEffect, useState } from "react";
+import Form from "./components/Form";
+import TodoList from "./components/TodoList";
 
-function App() {
+export default function App() {
+  const [todo, setTodo] = useState("");
+  const [todos, setTodos] = useState([]);
+  const [todoEditing, setTodoEditing] = useState(null);
+  const [editingText, setEditingText] = useState("");
+
+  //Save todos to Local Storage
+  useEffect(() => {
+    const json = localStorage.getItem("todos");
+    const loadedTodos = JSON.parse(json);
+    if (loadedTodos) {
+      setTodos(loadedTodos);
+    }
+  }, []);
+  useEffect(() => {
+    const json = JSON.stringify(todos);
+    localStorage.setItem("todos", json);
+  }, [todos]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header>
+        <h1 style={{ borderBottom: "5px solid blue" }}> Todos</h1>
       </header>
+      <Form todos={todos} setTodos={setTodos} todo={todo} setTodo={setTodo} />
+      <TodoList
+        setTodos={setTodos}
+        todos={todos}
+        editingText={editingText}
+        todoEditing={todoEditing}
+        setTodoEditing={setTodoEditing}
+        setEditingText={setEditingText}
+      />
     </div>
   );
 }
-
-export default App;
